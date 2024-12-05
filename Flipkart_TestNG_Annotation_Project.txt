@@ -1,0 +1,76 @@
+--------------- TestNG Annotation code ------------------
+public class FlipKart {
+		
+
+			WebDriver driver;
+			String mainPage;
+			
+
+			@BeforeSuite
+			
+			public void launchApplication() {
+			System.out.println("1. Launching Application...");
+			driver = new ChromeDriver();
+			driver.manage().window().maximize();
+			System.out.println("2. Hit the Url in the browser");
+			driver.get("https://www.flipkart.com/");
+			}
+			
+			
+
+			@BeforeTest
+			public void searchProduct() {
+			
+			System.out.println("3. Searching for the product...");
+			WebElement clickElement = driver.findElement(By.xpath("//input[@placeholder='Search for Products, Brands and More']"));
+			clickElement.sendKeys("SAMSUNG Galaxy F05 (Twilight Blue, 64 GB)  (4 GB RAM)");
+			clickElement.submit();
+			System.out.println("4. Hit the search button..");
+			driver.findElement(By.xpath("//button[@class='MJG8Up']")).click();
+
+			}
+
+			@Test
+			public void clickOnProduct() throws InterruptedException {
+				
+			Thread.sleep(2000);	
+			mainPage = driver.getWindowHandle();
+			driver.findElement(By.xpath("//div[@class='KzDlHZ']")).click();
+			
+			Set<String> windowHandles = driver.getWindowHandles();
+			  for (String handle : windowHandles) { 
+				  if (!handle.equals(windowHandles)) {
+					driver.switchTo().window(handle);
+					System.out.println("New Window URL: " + driver.getCurrentUrl());
+					}
+				  }
+			  }
+
+			@AfterTest
+			public void ClickOnBuyButton() throws InterruptedException {
+			
+			Thread.sleep(2000);
+			
+			System.out.println("5. Click on the Buy button..");
+			driver.findElement(By.xpath("//button[@type='button']")).click();
+			
+			Thread.sleep(3000);
+			System.out.println("6. Closing the child tab");
+			driver.close();
+			}
+			
+			@AfterSuite 
+			public void Home() throws InterruptedException {
+			
+			System.out.println("7. Move the main page");
+			driver.switchTo().window(mainPage);
+			
+			Thread.sleep(3000);
+			driver.findElement(By.xpath("//img[@title='Flipkart']")).click();
+			System.out.println("8. Closing the browser");
+			
+			driver.quit();
+			
+			}
+			
+}
